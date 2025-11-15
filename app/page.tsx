@@ -21,6 +21,7 @@ export default function CoinsPage() {
   const [allCoins, setAllCoins] = useState<any[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoriteCoins, setFavoriteCoins] = useState<any[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Day/Night Mode
 
   const {
     data: desktopData,
@@ -119,32 +120,51 @@ export default function CoinsPage() {
   );
 
   return (
-    <div className="space-y-6 md:border lg:border md:m-5 lg:m-5">
+    <div
+      className={`space-y-6 md:border lg:border md:m-5 lg:m-5 min-h-screen transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+      }`}
+    >
       {/* Header */}
-      <div className="items-center">
-        <div className="border-b p-5">
-          <h1 className="text-2xl font-semibold">Crypto Prices</h1>
-        </div>
+      <div className="flex items-center justify-between border-b p-5">
+        <h1 className="text-2xl font-semibold">Crypto Prices</h1>
 
-        <div className="flex items-center justify-between md:justify-start lg:justify-start gap-5 p-5">
-          <span>Favorites Only Mode</span>
-          <Switch
-            checked={showFavorites}
-            onCheckedChange={setShowFavorites}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400
-    ${showFavorites ? "bg-yellow-400" : "bg-gray-300"}`}
-          >
-            <span
-              className={`block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 ease-in-out
-      ${showFavorites ? "translate-x-6" : "translate-x-1"}
-    `}
-            />
-          </Switch>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2">
+            <span>{isDarkMode ? "Night" : "Day"}</span>
+            <Switch
+              checked={isDarkMode}
+              onCheckedChange={setIsDarkMode}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+              ${isDarkMode ? "bg-gray-700" : "bg-yellow-300"}`}
+            >
+              <span
+                className={`block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 ease-in-out
+                ${isDarkMode ? "translate-x-6" : "translate-x-1"}`}
+              />
+            </Switch>
+          </div>
         </div>
       </div>
 
       {/* Desktop */}
-      <div className="hidden md:block lg:block m-5 md:border lg:border">
+
+      <div className="flex items-center gap-2 mx-5">
+        <span>Favorites Only</span>
+        <Switch
+          checked={showFavorites}
+          onCheckedChange={setShowFavorites}
+          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400
+              ${showFavorites ? "bg-yellow-400" : "bg-gray-300"}`}
+        >
+          <span
+            className={`block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 ease-in-out
+                ${showFavorites ? "translate-x-6" : "translate-x-1"}`}
+          />
+        </Switch>
+      </div>
+
+      <div className="hidden md:block lg:block m-5 md:border lg:border rounded-lg">
         {desktopLoading && !showFavorites ? (
           <DesktopSkeleton />
         ) : desktopError ? (
@@ -152,9 +172,7 @@ export default function CoinsPage() {
         ) : (
           <CoinsTable
             data={coinsToDisplayDesktop}
-            onFavoritesChange={(updatedFavorites) =>
-              setFavoriteCoins(updatedFavorites)
-            }
+            onFavoritesChange={setFavoriteCoins}
           />
         )}
 
@@ -191,7 +209,8 @@ export default function CoinsPage() {
         )}
       </div>
 
-      <div className="md:hidden lg:hidden m-5 md:border lg:border">
+      {/* Mobile */}
+      <div className="md:hidden lg:hidden m-5 md:border lg:border rounded-lg">
         {mobileLoading && !showFavorites ? (
           <MobileSkeleton />
         ) : mobileError ? (
@@ -200,17 +219,15 @@ export default function CoinsPage() {
           <>
             <CoinsTable
               data={coinsToDisplayMobile}
-              onFavoritesChange={(updatedFavorites) =>
-                setFavoriteCoins(updatedFavorites)
-              }
+              onFavoritesChange={setFavoriteCoins}
             />
-
             {!showFavorites && !mobileError && (
               <div ref={loadMoreRef} className="flex justify-center p-5">
-                {isFetching && (
+                {isFetching ? (
                   <div className="h-16 w-full animate-pulse bg-gray-300 rounded"></div>
+                ) : (
+                  <p>Scroll down to load more</p>
                 )}
-                {!isFetching && <p>Scroll down to load more</p>}
               </div>
             )}
           </>
