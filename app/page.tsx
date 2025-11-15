@@ -130,14 +130,14 @@ export default function CoinsPage() {
           <span>Favorites Only Mode</span>
           <Switch
             checked={showFavorites}
-            onCheckedChange={(checked) => setShowFavorites(checked)}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
-            ${showFavorites ? "bg-yellow-400" : "bg-gray-300"}`}
+            onCheckedChange={setShowFavorites}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400
+    ${showFavorites ? "bg-yellow-400" : "bg-gray-300"}`}
           >
             <span
-              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                showFavorites ? "translate-x-5" : "translate-x-0"
-              }`}
+              className={`block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 ease-in-out
+      ${showFavorites ? "translate-x-6" : "translate-x-1"}
+    `}
             />
           </Switch>
         </div>

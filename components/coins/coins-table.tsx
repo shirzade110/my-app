@@ -51,7 +51,7 @@ export default function CoinsTable({
               <TableHead>Price</TableHead>
               <TableHead>Market Cap</TableHead>
               <TableHead className="text-right">24h Change</TableHead>
-              <TableHead className="text-right">7d</TableHead> {/* Sparkline */}
+              <TableHead className="text-right">7d</TableHead>
               <TableHead className="text-right">Favorite</TableHead>
             </TableRow>
           </TableHeader>
