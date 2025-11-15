@@ -22,15 +22,19 @@ export default function CoinsPage() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoriteCoins, setFavoriteCoins] = useState<any[]>([]);
 
-  const { data: desktopData, isLoading: desktopLoading } = useCoins(
-    page,
-    perPage
-  );
+  const {
+    data: desktopData,
+    isLoading: desktopLoading,
+    isError: desktopError,
+    refetch: refetchDesktop,
+  } = useCoins(page, perPage);
 
   const {
     data: mobileData,
     isLoading: mobileLoading,
     isFetching,
+    isError: mobileError,
+    refetch: refetchMobile,
   } = useCoins(mobilePage, perPage);
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -60,9 +64,7 @@ export default function CoinsPage() {
   useEffect(() => {
     if (!loadMoreRef.current) return;
 
-    if (observer.current) {
-      observer.current.disconnect();
-    }
+    if (observer.current) observer.current.disconnect();
 
     observer.current = new IntersectionObserver(handleObserver, {
       root: null,
@@ -104,6 +106,19 @@ export default function CoinsPage() {
     </div>
   );
 
+  // Error Component
+  const ErrorMessage = ({ onRetry }: { onRetry: () => void }) => (
+    <div className="p-5 text-center text-red-600 space-y-2">
+      <p>Error loading coins. Please try again.</p>
+      <button
+        onClick={onRetry}
+        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Retry
+      </button>
+    </div>
+  );
+
   return (
     <div className="space-y-6 md:border lg:border md:m-5 lg:m-5">
       <div className="items-center">
@@ -128,9 +143,12 @@ export default function CoinsPage() {
         </div>
       </div>
 
+      {/* Desktop */}
       <div className="hidden md:block lg:block m-5 md:border lg:border">
         {desktopLoading && !showFavorites ? (
           <DesktopSkeleton />
+        ) : desktopError ? (
+          <ErrorMessage onRetry={refetchDesktop} />
         ) : (
           <CoinsTable
             data={coinsToDisplayDesktop}
@@ -140,7 +158,7 @@ export default function CoinsPage() {
           />
         )}
 
-        {!showFavorites && !desktopLoading && (
+        {!showFavorites && !desktopLoading && !desktopError && (
           <div className="flex justify-end p-5">
             <Pagination>
               <PaginationContent>
@@ -173,10 +191,12 @@ export default function CoinsPage() {
         )}
       </div>
 
-      {/* Mobile Cards */}
+      {/* Mobile */}
       <div className="md:hidden lg:hidden m-5 md:border lg:border">
         {mobileLoading && !showFavorites ? (
           <MobileSkeleton />
+        ) : mobileError ? (
+          <ErrorMessage onRetry={refetchMobile} />
         ) : (
           <CoinsTable
             data={coinsToDisplayMobile}

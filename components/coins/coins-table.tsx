@@ -42,7 +42,6 @@ export default function CoinsTable({
 
   return (
     <div className="space-y-4">
-      {/* Desktop Table */}
       <div className="hidden md:block">
         <Table>
           <TableHeader>
@@ -124,8 +123,6 @@ export default function CoinsTable({
           </TableBody>
         </Table>
       </div>
-
-      {/* Mobile Cards */}
       <div className="flex flex-col space-y-4 md:hidden">
         {data?.map((coin, index) => {
           const isFavorite = favorites.some((fav) => fav.id === coin.id);
