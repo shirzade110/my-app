@@ -106,7 +106,6 @@ export default function CoinsPage() {
     </div>
   );
 
-  // Error Component
   const ErrorMessage = ({ onRetry }: { onRetry: () => void }) => (
     <div className="p-5 text-center text-red-600 space-y-2">
       <p>Error loading coins. Please try again.</p>
@@ -121,6 +120,7 @@ export default function CoinsPage() {
 
   return (
     <div className="space-y-6 md:border lg:border md:m-5 lg:m-5">
+      {/* Header */}
       <div className="items-center">
         <div className="border-b p-5">
           <h1 className="text-2xl font-semibold">Crypto Prices</h1>
@@ -191,25 +191,29 @@ export default function CoinsPage() {
         )}
       </div>
 
-      {/* Mobile */}
       <div className="md:hidden lg:hidden m-5 md:border lg:border">
         {mobileLoading && !showFavorites ? (
           <MobileSkeleton />
         ) : mobileError ? (
           <ErrorMessage onRetry={refetchMobile} />
         ) : (
-          <CoinsTable
-            data={coinsToDisplayMobile}
-            onFavoritesChange={(updatedFavorites) =>
-              setFavoriteCoins(updatedFavorites)
-            }
-          />
-        )}
+          <>
+            <CoinsTable
+              data={coinsToDisplayMobile}
+              onFavoritesChange={(updatedFavorites) =>
+                setFavoriteCoins(updatedFavorites)
+              }
+            />
 
-        {!showFavorites && (
-          <div ref={loadMoreRef} className="flex justify-center p-5">
-            {isFetching ? <MobileSkeleton /> : <p>Scroll down to load more</p>}
-          </div>
+            {!showFavorites && !mobileError && (
+              <div ref={loadMoreRef} className="flex justify-center p-5">
+                {isFetching && (
+                  <div className="h-16 w-full animate-pulse bg-gray-300 rounded"></div>
+                )}
+                {!isFetching && <p>Scroll down to load more</p>}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
