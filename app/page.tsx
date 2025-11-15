@@ -148,7 +148,6 @@ export default function CoinsPage() {
       </div>
 
       {/* Desktop */}
-
       <div className="flex items-center gap-2 mx-5">
         <span>Favorites Only</span>
         <Switch
@@ -211,7 +210,7 @@ export default function CoinsPage() {
 
       {/* Mobile */}
       <div className="md:hidden lg:hidden m-5 md:border lg:border rounded-lg">
-        {mobileLoading && !showFavorites ? (
+        {mobilePage === 1 && mobileLoading && !showFavorites ? (
           <MobileSkeleton />
         ) : mobileError ? (
           <ErrorMessage onRetry={refetchMobile} />
