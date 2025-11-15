@@ -21,7 +21,7 @@ export default function CoinsPage() {
   const [allCoins, setAllCoins] = useState<any[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoriteCoins, setFavoriteCoins] = useState<any[]>([]);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Day/Night Mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const {
     data: desktopData,
