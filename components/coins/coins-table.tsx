@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -10,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Star } from "lucide-react";
+import { Sparklines, SparklinesLine } from "react-sparklines";
 
 interface CoinTableProps {
   data: any[];
@@ -53,6 +52,7 @@ export default function CoinsTable({
               <TableHead>Price</TableHead>
               <TableHead>Market Cap</TableHead>
               <TableHead className="text-right">24h Change</TableHead>
+              <TableHead className="text-right">7d</TableHead> {/* Sparkline */}
               <TableHead className="text-right">Favorite</TableHead>
             </TableRow>
           </TableHeader>
@@ -61,7 +61,7 @@ export default function CoinsTable({
             {data?.map((coin, index) => {
               const isFavorite = favorites.some((fav) => fav.id === coin.id);
               return (
-                <TableRow key={coin.id} key={`${coin.id}-${index}`}>
+                <TableRow key={`${coin.id}-${index}`}>
                   <TableCell>{index + 1}</TableCell>
 
                   <TableCell className="flex items-center gap-2">
@@ -81,6 +81,29 @@ export default function CoinsTable({
                     }`}
                   >
                     {coin.price_change_percentage_24h.toFixed(2)}%
+                  </TableCell>
+
+                  <TableCell className="text-right w-[100px]">
+                    {coin.sparkline_in_7d?.price ? (
+                      <Sparklines
+                        data={coin.sparkline_in_7d.price}
+                        width={100}
+                        height={30}
+                      >
+                        <SparklinesLine
+                          color={
+                            coin.sparkline_in_7d.price[0] <
+                            coin.sparkline_in_7d.price[
+                              coin.sparkline_in_7d.price.length - 1
+                            ]
+                              ? "green"
+                              : "red"
+                          }
+                        />
+                      </Sparklines>
+                    ) : (
+                      "-"
+                    )}
                   </TableCell>
 
                   <TableCell className="text-right">
@@ -108,8 +131,8 @@ export default function CoinsTable({
           const isFavorite = favorites.some((fav) => fav.id === coin.id);
           return (
             <div
-              key={coin.id}
-              className="border rounded-lg p-4 shadow-sm flex justify-between items-center"
+              key={`${coin.id}-${index}`}
+              className="border rounded-lg p-4 shadow-sm flex justify-between  gap-2"
             >
               <div className="flex items-center gap-3">
                 <span className="font-semibold">{index + 1}.</span>
@@ -131,7 +154,30 @@ export default function CoinsTable({
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-1">
+              <div className="mt-1 w-[120px]">
+                {coin.sparkline_in_7d?.price ? (
+                  <Sparklines
+                    data={coin.sparkline_in_7d.price}
+                    width={120}
+                    height={40}
+                  >
+                    <SparklinesLine
+                      color={
+                        coin.sparkline_in_7d.price[0] <
+                        coin.sparkline_in_7d.price[
+                          coin.sparkline_in_7d.price.length - 1
+                        ]
+                          ? "green"
+                          : "red"
+                      }
+                    />
+                  </Sparklines>
+                ) : (
+                  "-"
+                )}
+              </div>
+
+              <div className=" justify-end">
                 <button
                   onClick={() => toggleFavorite(coin)}
                   className="p-1 hover:text-yellow-500 transition"
